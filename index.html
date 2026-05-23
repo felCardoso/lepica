@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+    />
+    <title>LEPICA v2.0</title>
+
+    <!-- Script inicial para evitar FOUC (Flash of Unstyled Content) do tema -->
+    <script>
+      const savedTheme =
+        localStorage.getItem("lepica-theme") ||
+        (window.matchMedia("(prefers-color-scheme: light)").matches
+          ? "light"
+          : "dark");
+      if (savedTheme === "light") {
+        document.documentElement.setAttribute("data-theme", "light");
+      }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="locked">
+    <canvas id="hearts-canvas"></canvas>
+
+    <div id="welcome-screen" class="welcome-screen">
+      <div class="welcome-content">
+        <p class="welcome-eyebrow">Felipe &amp; Letícia</p>
+        <h1 class="welcome-title">LEPICA</h1>
+        <p class="welcome-subtitle">
+          Admita a verdade para ver seu presente
+          <br />
+          (não vale cruzar o dedo)
+        </p>
+        <button id="btn-unlock" class="btn-unlock">
+          <span>O Felipe ama mais!</span>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+            <path
+              d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- CONTROLES FLUTUANTES (TEMA E MÚSICA) -->
+    <div id="controls-container" class="controls-container hidden">
+      <button id="theme-toggle" class="control-btn" aria-label="Alternar Tema">
+        <svg id="theme-icon" class="theme-icon" viewBox="0 0 24 24">
+          <!-- Ícone padrão (lua/escuro) gerado dinamicamente via JS -->
+        </svg>
+        <span class="theme-text">Tema</span>
+      </button>
+      <button
+        id="music-toggle"
+        class="control-btn"
+        aria-label="Tocar ou pausar música"
+      >
+        <div class="sound-waves">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </div>
+        <span class="music-text">Música</span>
+      </button>
+      <audio id="bg-audio" loop>
+        <source src="music/music.mp3" type="audio/mpeg" />
+      </audio>
+    </div>
+
+    <section class="hero">
+      <div>
+        <p class="hero-eyebrow">Felipe &amp; Letícia</p>
+        <h1 class="hero-title">LEPICA</h1>
+        <div class="hero-rule"></div>
+        <p class="hero-sub">dois anos</p>
+        <p class="hero-date">since 25 · 05 · 2024</p>
+      </div>
+      <div class="hero-scroll">
+        <span>role</span>
+        <div class="hero-scroll-line"></div>
+      </div>
+    </section>
+
+    <div class="section-sep"></div>
+    <section class="section counter-section">
+      <span class="label reveal">tempo juntos</span>
+      <p class="heading reveal reveal-d1">
+        cada pedacinho de tempo ao seu lado
+      </p>
+
+      <div class="counter-border reveal reveal-d2">
+        <div class="counter-grid">
+          <div class="c-cell">
+            <span class="c-num" id="c-anos">0</span>
+            <span class="c-label" id="c-label-anos">Anos</span>
+          </div>
+          <div class="c-cell">
+            <span class="c-num" id="c-meses">00</span>
+            <span class="c-label" id="c-label-meses">Meses</span>
+          </div>
+          <div class="c-cell">
+            <span class="c-num" id="c-dias">00</span>
+            <span class="c-label" id="c-label-dias">Dias</span>
+          </div>
+          <div class="c-cell">
+            <span class="c-num" id="c-horas">00</span>
+            <span class="c-label" id="c-label-horas">Horas</span>
+          </div>
+          <div class="c-cell">
+            <span class="c-num" id="c-min">00</span>
+            <span class="c-label" id="c-label-min">Minutos</span>
+          </div>
+          <div class="c-cell">
+            <span class="c-num" id="c-seg">00</span>
+            <span class="c-label" id="c-label-seg">Segundos</span>
+          </div>
+        </div>
+        <div class="totals-row">
+          <div class="t-cell">
+            <span class="t-num" id="t-dias">0</span>
+            <span class="t-label" id="t-label-dias">Total de dias</span>
+          </div>
+          <div class="t-cell">
+            <span class="t-num" id="t-horas">0</span>
+            <span class="t-label" id="t-label-horas">Total de horas</span>
+          </div>
+          <div class="t-cell">
+            <span class="t-num" id="t-min">0</span>
+            <span class="t-label" id="t-label-min">Total de minutos</span>
+          </div>
+          <div class="t-cell">
+            <span class="t-num" id="t-seg">0</span>
+            <span class="t-label" id="t-label-seg">Total de segundos</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-sep"></div>
+    <section class="section photos-section">
+      <span class="label reveal">nossa história</span>
+      <p class="heading reveal reveal-d1">
+        momentos que<br />guardarei pra sempre
+      </p>
+      <div class="photos-container">
+        <div id="photos-grid-v2" class="photos-grid-v2"></div>
+        <div class="load-more-container reveal reveal-d1">
+          <button id="btn-load-more" class="btn-load-more">
+            Ver mais memórias
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-sep"></div>
+    <section class="section message-section">
+      <span class="label reveal">pra você</span>
+      <p class="message-quote reveal reveal-d1">Agora falando sério,</p>
+      <div class="letter-card reveal reveal-d2">
+        <p class="message-body">
+          Meu bem, nesses <span id="text-seg" class="letter-num">...</span>
+          segundos ao seu lado, aprendi que até a menor fração de tempo importa
+          quando o assunto é você. Cada piscar de olhos, cada momento ao seu
+          lado e cada detalhe compartilhado fez a minha vida mais feliz.
+        </p>
+        <p class="message-body">
+          E também nesses <span id="text-min" class="letter-num">...</span>
+          minutos, eu colecionei memórias suficientes para preencher uma vida
+          inteira. Foram risadas fáceis, dias e noites inesquecíveis de pura
+          alegria, emoção e uma conexão absurda.
+        </p>
+        <p class="message-body">
+          São <span id="text-horas" class="letter-num">...</span> horas com você
+          morando nos meus pensamentos. Do segundo em que acordo até o momento
+          em que vou dormir, desde aquele aniversário da Júlia. Você é a minha
+          primeira e última certeza do dia, mesmo quando não estamos fisicamente
+          perto cada hora tem um pouco de você.
+        </p>
+        <p class="message-body">
+          <span id="text-dias" class="letter-num">...</span> dias acordando e
+          escolhendo amar você de novo. Cada novo amanhecer foi uma nova chance
+          de te fazer sorrir, de te compreender um pouco mais e de ter a certeza
+          de que encontrei a pessoa com quem quero dividir todos os meus
+          amanhãs.
+        </p>
+        <p class="message-body">
+          Pouco mais de <span id="text-semanas" class="letter-num">...</span>
+          semanas construindo a nossa rotina e o nosso refúgio. De quintas pós
+          futebol a finais de semana viajando, mesmo com aqueles domingos
+          tristes por termos que nos despedir, você transformou os meus dias
+          comuns na melhor época da minha vida.
+        </p>
+        <p class="message-body">
+          E também <span id="text-meses" class="letter-num">...</span> meses
+          descobrindo novas versões de nós mesmos. A cada mês que vira no
+          calendário, me apaixono por um detalhe diferente seu e sinto que a
+          nossa parceria se torna ainda mais sólida.
+        </p>
+        <p class="message-body">
+          Foram <span id="text-anos" class="letter-num">...</span> anos sendo a
+          pessoa mais feliz do mundo ao seu lado. Pode parecer muito tempo
+          quando eu conto em segundos, meu amor, mas no fundo, eu sinto que é
+          apenas o prólogo da nossa história. Que venham os próximos milhões de
+          segundos. Eu e você.
+        </p>
+        <p class="message-sig">
+          Com todo o meu (superior e maior) amor, Fepica ♥
+        </p>
+      </div>
+    </section>
+
+    <!-- LIGHTBOX MODAL -->
+    <div id="lightbox" class="lightbox" role="dialog" aria-modal="true">
+      <span class="lightbox-close" aria-label="Fechar">&times;</span>
+      <button class="lightbox-prev" aria-label="Foto anterior">&#10094;</button>
+      <div class="lightbox-content-container">
+        <img
+          id="lightbox-img"
+          class="lightbox-img"
+          src=""
+          alt="Visualização ampliada"
+        />
+        <span id="lightbox-caption" class="lightbox-caption"></span>
+      </div>
+      <button class="lightbox-next" aria-label="Próxima foto">&#10095;</button>
+      <div class="lightbox-counter">
+        <span id="lightbox-current">1</span> /
+        <span id="lightbox-total">28</span>
+      </div>
+    </div>
+
+    <footer>
+      <a href="#top" class="footer-link"
+        ><span class="footer-name">LEPICA</span></a
+      >
+      <span class="footer-since">since 25 · 05 · 2024</span>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
